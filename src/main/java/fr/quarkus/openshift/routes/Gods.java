@@ -1,5 +1,6 @@
 package fr.quarkus.openshift.routes;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -36,5 +37,12 @@ public class Gods {
         return "I'm gonna add this god to the database: " + god.getName()
                 + " from " + god.getCountry() + " living at " + god.getPlace() + " and " + god.getDivinityGroup()
                 + " divinity group";
+    }
+
+    @DELETE
+    @Path("/{name}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String delete(@PathParam("name") String name) {
+        return "I'm gonna delete this god: " + name + " from the database";
     }
 }
