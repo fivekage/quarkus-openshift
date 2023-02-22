@@ -1,5 +1,7 @@
 package fr.quarkus.openshift.routes;
 
+import java.util.List;
+
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -9,7 +11,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import fr.quarkus.openshift.models.God;
+import fr.quarkus.openshift.database.DivinityGroup;
+import fr.quarkus.openshift.database.God;
 
 /*
  * God entity CRUD
@@ -21,7 +24,15 @@ public class Gods {
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
     public String getAll() {
-        return "Here is all gods";
+        List<God> gods = God.listAll();
+        if (gods == null || gods.isEmpty())
+            return "There is no god in the database";
+
+        StringBuilder sb = new StringBuilder();
+        for (God god : gods) {
+            sb.append("Name: " + god.name + "\n");
+        }
+        return "Here is all gods : \n" + sb.toString();
     }
 
     @GET
@@ -30,7 +41,12 @@ public class Gods {
         if (name == null || name.isEmpty())
             return "You must specify a name to get a god";
 
-        return "Here is " + name + " god: ";
+        God god = God.findByName(name);
+        if (god == null)
+            return "This god doesn't exist in the database";
+
+        return "Here is " + name + " god: " + god.name + " from " + god.country + " living at " + god.place + " and "
+                + god.idDivinityGroup + " divinity group";
     }
 
     @POST
@@ -40,8 +56,10 @@ public class Gods {
         if (god == null)
             return "You must specify a god to add it to the database";
 
-        return "I'm gonna add this god to the database: " + god.getName()
-                + " from " + god.getCountry() + " living at " + god.getPlace() + " and " + god.getDivinityGroup()
+        God.add(god.name, god.place, god.country, 1);
+
+        return "I'm gonna add this god to the database: " + god.place
+                + " from " + god.country + " living at " + god.place + " and " + god.idDivinityGroup
                 + " divinity group";
     }
 
@@ -49,6 +67,7 @@ public class Gods {
     @Path("/{name}")
     @Produces(MediaType.APPLICATION_JSON)
     public String delete(@PathParam("name") String name) {
+        God.delete(name);
         return "I'm gonna delete this god: " + name + " from the database";
     }
 }
