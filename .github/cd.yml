@@ -1,0 +1,56 @@
+name: Deploy the app on Docker registry
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy the app on Docker registry
+    # Add 'id-token' with the intended permissions for workload identity federation
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.PID }}
+
+      # - name: Install OpenShift CLI tools from official mirror
+      #   uses: redhat-actions/openshift-tools-installer@v1
+      #   with:
+      #     source: "mirror"
+
+      #     kam: "latest"
+      #     s2i: "latest"
+      #     tkn: "latest"
+
+      - name: Build and push the image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64
+          tags: ghcr.io/quarkus-openshift/back:${{ github.sha }}
+
+      # - name: Login to OpenShift
+      #   uses: redhat-actions/openshift-login@v1
+      #   with:
+      #     kubeconfig: ${{ secrets.KUBECONFIG }}
+
+      # - name: Deploy the app on OpenShift
+      #   uses: redhat-actions/openshift-deploy@v1
+      #   with:
+      #     kubeconfig: ${{ secrets.KUBECONFIG }}
+      #     image: ghcr.io/quarkus-openshift/back:${{ github.sha }}
+      #     deployment: back
+      #     namespace: quarkus-openshift
