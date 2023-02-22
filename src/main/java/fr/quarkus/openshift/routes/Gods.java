@@ -30,7 +30,7 @@ public class Gods {
 
         StringBuilder sb = new StringBuilder();
         for (God god : gods) {
-            sb.append("Name: " + god.name + "\n");
+            sb.append("\t- Name : " + god.name + " | Place : " + god.place + "\n");
         }
         return "Here is all gods : \n" + sb.toString();
     }
