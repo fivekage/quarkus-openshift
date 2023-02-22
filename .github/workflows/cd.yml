@@ -25,10 +25,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.PID }}
 
+      - name: Package the Quarkus app with Maven
+        run: ./mvnw package -Dskiptests
+
       - name: Build and push the image
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
           platforms: linux/amd64
+          file: src/main/docker/Dockerfile.jvm
           tags: ghcr.io/quarkus-openshift/back:${{ github.sha }}
