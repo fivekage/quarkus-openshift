@@ -10,8 +10,8 @@ jobs:
     name: Deploy the app on Docker registry
     # Add 'id-token' with the intended permissions for workload identity federation
     permissions:
-      contents: 'read'
-      id-token: 'write'
+      contents: "read"
+      id-token: "write"
 
     runs-on: ubuntu-latest
     steps:
@@ -30,6 +30,10 @@ jobs:
 
       - name: Build and push the image
         uses: docker/build-push-action@v4
+        env:
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_URL: ${{ secrets.DB_URL }}
         with:
           context: .
           push: true
