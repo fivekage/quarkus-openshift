@@ -1,7 +1,9 @@
+QUARKUS_IMAGE_TAG=docker.io/elkpuchon/quarkus-openshift:latest
+
 build_image:
 	./mvnw package -DskipTests
-	docker build -f src/main/docker/Dockerfile.jvm -t docker.io/elkpuchon/quarkus-hello-world . --platform=linux/amd64
-	docker push docker.io/elkpuchon/quarkus-hello-world
+	docker build -f src/main/docker/Dockerfile.jvm -t ${QUARKUS_IMAGE_TAG} . --platform=linux/amd64
+	docker push ${QUARKUS_IMAGE_TAG}
 
 
 deploy_on_oc:

@@ -7,36 +7,36 @@ on:
 
 jobs:
   deploy:
-    name: Deploy the app on Docker registry
-    # Add 'id-token' with the intended permissions for workload identity federation
-    permissions:
-      contents: "read"
-      id-token: "write"
+    name: Deploy the app on OpenShift SandBox server
 
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
+      
+      - name: Setup Java
+        uses: actions/setup-java@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.PID }}
+          distribution: 'temurin'
+          java-version: 17
 
-      - name: Package the Quarkus app with Maven
-        run: ./mvnw package -Dskiptests
-
-      - name: Build and push the image
-        uses: docker/build-push-action@v4
-        env:
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_URL: ${{ secrets.DB_URL }}
+      - name: Install oc
+        uses: redhat-actions/oc-installer@v1
         with:
-          context: .
-          push: true
-          platforms: linux/amd64
-          file: src/main/docker/Dockerfile.jvm
-          tags: ghcr.io/quarkus-openshift/back:${{ github.sha }}
+         oc_version: '4.6'
+
+      - name : Login into docker hub
+        run: |
+          docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push docker image with maven
+        run: |
+            make build_image
+
+      - name: Login on OpenShift Server 
+        run: |
+            oc login --token=${{ secrets.OC_TOKEN }} --server=${{ secrets.OC_SERVER }}
+
+      - name: Update kubeconfig
+        run: |
+          make update_deployment_image

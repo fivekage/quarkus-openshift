@@ -15,7 +15,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: open-shift-app
-          image: docker.io/elkpuchon/quarkus-hello-world
+          image: docker.io/elkpuchon/quarkus-openshift
           imagePullPolicy: "Always"
           ports:
             - containerPort: 8080
