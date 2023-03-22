@@ -8,15 +8,15 @@ spec:
   ports:
     - port: 80
       targetPort: 8080
-
+---
 apiVersion: v1
 kind: Service
 metadata:
   name: open-shift-mysql-service
 spec:
-selector:
-    app: open-shift-app
+  selector:
+    app: open-shift-mysql
   ports:
-    port: 3306
-    targetPort: 3306
+    - port: 3306
+      targetPort: 3306
   

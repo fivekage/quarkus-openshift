@@ -20,6 +20,7 @@ spec:
           ports:
             - containerPort: 8080
 
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -27,12 +28,12 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: open-shift-app
+      app: open-shift-mysql
   replicas: 1
   template:
     metadata:
       labels:
-        app: open-shift-app
+        app: open-shift-mysql
     spec:
       terminationGracePeriodSeconds: 30
       containers:
