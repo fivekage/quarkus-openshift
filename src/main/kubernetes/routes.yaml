@@ -8,3 +8,14 @@ spec:
     name: open-shift-app-service
   port:
     targetPort: 8080
+
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: open-shift-mysql-route
+spec:
+  to:
+    kind: Service
+    name: open-shift-mysql-service
+  port:
+    targetPort: 3306
