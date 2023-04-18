@@ -21,6 +21,13 @@ import fr.quarkus.openshift.database.God;
 public class Gods {
 
     @GET
+    @Path("/default")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getDefault() {
+        return "This is default route for gods";
+    }
+
+    @GET
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
     public String getAll() {
