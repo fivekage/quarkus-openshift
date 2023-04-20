@@ -24,7 +24,7 @@ public class Gods {
     @Path("/default")
     @Produces(MediaType.APPLICATION_JSON)
     public String getDefault() {
-        return "This is default route for gods";
+        return "This is default route for gods and for the presentation";
     }
 
     @GET
